@@ -26,7 +26,7 @@ import org.buteomont.util.*;
  * (ie, by a for-profit company or business) then you should purchase a license -
  * please visit www.cloudgarden.com for details.
  */
-public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, ImageSaver
+public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, ImageSaver, PulseListener
 	{
 	public static final String INI_FILE_NAME = "veo.ini";  //  @jve:decl-index=0:
 	private JButton	btnRight;
@@ -290,14 +290,22 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	private void makeVertPulse(int rate)
 		{
 		vertPulse=new Pulse(rate,"V");
-		if (veo!=null) vertPulse.addListener(veo);
+		if (veo!=null) 
+			{
+			vertPulse.addListener(veo);
+			vertPulse.addListener(this);
+			}
 		vertPulse.start();
 		}
 
 	private void makeHorzPulse(int rate)
 		{
 		horzPulse=new Pulse(rate,"H");
-		if (veo!=null) horzPulse.addListener(veo);
+		if (veo!=null) 
+			{
+			horzPulse.addListener(veo);
+			horzPulse.addListener(this);
+			}
 		horzPulse.start();
 		}
 
@@ -1194,8 +1202,16 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 							if (getHiResRadioButtonMenuItem().isSelected()) streamCode=VeoConstants.VEO_STREAM_640x480;
 							veo.selectStream(streamCode, 1);
 							startStopStreaming();
-							if (horzPulse!=null) horzPulse.addListener(veo);
-							if (vertPulse!=null) vertPulse.addListener(veo);
+							if (horzPulse!=null) 
+								{
+								horzPulse.addListener(veo);
+								horzPulse.addListener(this);
+								}
+							if (vertPulse!=null) 
+								{
+								vertPulse.addListener(veo);
+								vertPulse.addListener(this);
+								}
 							}
 						}
 					catch (NumberFormatException e)
@@ -1405,6 +1421,14 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	public Pulse getVertPulse()
 		{
 		return vertPulse;
+		}
+
+	public void pulsed(Object source, String id)
+		{
+		// Veo already did the move, update the sliders
+		updateStatus(id.equals("V"), 
+					 id.equals("V")?veo.isUp():veo.isRight(),
+					 true);
 		}
 	
 	}  //  @jve:decl-index=0:visual-constraint="10,10"

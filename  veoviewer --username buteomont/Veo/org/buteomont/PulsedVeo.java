@@ -9,11 +9,11 @@ import org.buteomont.util.PulseListener;
 
 public class PulsedVeo extends Veo implements PulseListener
 	{
-	int hStep=0;
-	int vStep=0;
-	int max=0;
-	boolean up;
-	boolean right;
+	private int hStep=0;
+	private int vStep=0;
+	private int max=0;
+	private boolean up;
+	private boolean right;
 	
 	public PulsedVeo(String host, int port, int maxSteps) throws UnknownHostException, IOException
 		{
@@ -92,6 +92,16 @@ public class PulsedVeo extends Veo implements PulseListener
 	public void setVStep(int step)
 		{
 		this.vStep=step;
+		}
+
+	public boolean isRight()
+		{
+		return right;
+		}
+
+	public boolean isUp()
+		{
+		return up;
 		}
 
 	}
