@@ -11,6 +11,22 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <javaElement handleIdentifier="=Veo Netcam"/>
+        <file path="/Veo Netcam/right.gif"/>
+        <javaElement handleIdentifier="=Veo Netcam/&lt;"/>
+        <file path="/Veo Netcam/veoImage.jpg"/>
+        <javaElement handleIdentifier="=Veo Netcam/&lt;org.buteomont"/>
+        <javaElement handleIdentifier="=Veo Netcam/&lt;net.halo3.veo.viewer"/>
+        <file path="/Veo Netcam/up.gif"/>
+        <file path="/Veo Netcam/.project"/>
+        <file path="/Veo Netcam/veo.ini"/>
+        <file path="/Veo Netcam/left.gif"/>
+        <file path="/Veo Netcam/java.policy.applet"/>
+        <javaElement handleIdentifier="=Veo Netcam/&lt;net.halo3.veo"/>
+        <javaElement handleIdentifier="=Veo Netcam/&lt;net.halo3.veo.messages"/>
+        <file path="/Veo Netcam/veo.jardesc"/>
+        <file path="/Veo Netcam/.classpath"/>
+        <file path="/Veo Netcam/control.gif"/>
+        <file path="/Veo Netcam/down.gif"/>
+        <javaElement handleIdentifier="=Veo Netcam/&lt;org.buteomont.util"/>
     </selectedElements>
 </jardesc>

@@ -17,6 +17,9 @@ import net.halo3.veo.*;
 import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
 
+import org.buteomont.PulsedVeo;
+import org.buteomont.util.*;
+
 /**
  * This code was generated using CloudGarden's Jigloo SWT/Swing GUI Builder,
  * which is free for non-commercial use. If Jigloo is being used commercially
@@ -34,8 +37,8 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	String			username	="admin";  //  @jve:decl-index=0:
 	String			password	="password";  //  @jve:decl-index=0:
 	String			hostname	="10.10.6.91";  //  @jve:decl-index=0:
-	String			port		="1600";
-	Veo				veo			=null;  //  @jve:decl-index=0:
+	String			port		="1600";  //  @jve:decl-index=0:
+	PulsedVeo		veo			=null;  //  @jve:decl-index=0:
 	private boolean	streaming	=false;
 	private JSlider horizSlider = null;
 	private JPanel contentPanel = null;
@@ -78,6 +81,10 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	private static final String[] MONTHS=new String[]{"Jan","Feb","Mar",
 		"Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
 	private JCheckBoxMenuItem verboseCheckBoxMenuItem = null;
+	private Pulse horzPulse=null;  //  @jve:decl-index=0:
+	private Pulse vertPulse=null;  //  @jve:decl-index=0:
+	
+	
 	public VeoViewer()
 		{
 		initialize();
@@ -253,6 +260,10 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 				getMaintainRatioCheckBoxMenuItem().setSelected(Boolean.valueOf((String)settings.get(var)).booleanValue());
 			else if (var.equalsIgnoreCase("serverPortNumber"))
 				setServerPortNumber(Integer.valueOf((String)settings.get(var)).intValue());
+			else if (var.equalsIgnoreCase("horzRate"))
+				makeHorzPulse(Integer.valueOf((String)settings.get(var)).intValue());
+			else if (var.equalsIgnoreCase("vertRate"))
+				makeVertPulse(Integer.valueOf((String)settings.get(var)).intValue());
 			
 			//server timestamp font info
 			else if (var.equalsIgnoreCase("serverFontFace"))
@@ -274,6 +285,20 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 			setServerImageFont(new Font(serverFontFace.substring(0, serverFontFace.indexOf(".")),
 										Integer.parseInt(serverFontStyle),
 										Integer.parseInt(serverFontSize)));
+		}
+
+	private void makeVertPulse(int rate)
+		{
+		vertPulse=new Pulse(rate,"V");
+		if (veo!=null) vertPulse.addListener(veo);
+		vertPulse.start();
+		}
+
+	private void makeHorzPulse(int rate)
+		{
+		horzPulse=new Pulse(rate,"H");
+		if (veo!=null) horzPulse.addListener(veo);
+		horzPulse.start();
 		}
 
 	private void saveToIni()
@@ -306,6 +331,8 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		else if (getMedResRadioButtonMenuItem().isSelected()) res="320x240";
 		else if (getHiResRadioButtonMenuItem().isSelected()) res="640x480";
 		settings.put("resolution", res);
+		if (horzPulse!=null) settings.put("horzRate", horzPulse.getRate()+"");
+		if (vertPulse!=null) settings.put("vertRate", vertPulse.getRate()+"");
 		try
 			{
 			init.persist();
@@ -926,6 +953,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 			if (isServerTimestampEnabled())
 				setServerImageFont(dialog.getTimestampFont());
 			setServerTimestampEnabled(dialog.getTimestampOptionCheckBox().isSelected());
+			setAutoMotion(dialog);
 			}
 		}
 
@@ -1107,6 +1135,10 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 			enableUI(false);
 			streaming=false;
 			veo=null;
+			horzPulse.setGoing(false);
+			horzPulse=null;
+			vertPulse.setGoing(false);
+			vertPulse=null;
 			}
 		else
 			{
@@ -1126,7 +1158,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 					dialog.setHost(hostname);
 					dialog.setPort(port);
 					dialog.getAutoLoginCheckBox().setSelected(isAutologin());
-					dialog.show();
+					dialog.setVisible(true);
 					if (dialog.wasCanceled()==false)
 						{
 						username=dialog.getUser();
@@ -1143,7 +1175,8 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 					{
 					try
 						{
-						veo=new Veo(hostname, Integer.parseInt(port));
+//						veo=new Veo(hostname, Integer.parseInt(port));
+						veo=new PulsedVeo(hostname, Integer.parseInt(port), MAX_HORIZONTAL);
 						loggedIn=veo.login(username, password);
 						if (loggedIn==false)
 							{
@@ -1161,6 +1194,8 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 							if (getHiResRadioButtonMenuItem().isSelected()) streamCode=VeoConstants.VEO_STREAM_640x480;
 							veo.selectStream(streamCode, 1);
 							startStopStreaming();
+							if (horzPulse!=null) horzPulse.addListener(veo);
+							if (vertPulse!=null) vertPulse.addListener(veo);
 							}
 						}
 					catch (NumberFormatException e)
@@ -1181,6 +1216,30 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 					}
 				}
 			}
+		}
+
+	private void setAutoMotion(OptionsDialog dialog)
+		{
+		if (veo==null) return;
+		if (horzPulse!=null)
+			{
+			horzPulse.setGoing(false);
+			horzPulse=null;
+			}
+		if (dialog.isAutoHorzMotion())
+			{
+			makeHorzPulse(dialog.getAutoHorzRate());
+			}
+		if (vertPulse!=null)
+			{
+			vertPulse.setGoing(false);
+			vertPulse=null;
+			}
+		if (dialog.isAutoVertMotion())
+			{
+			makeVertPulse(dialog.getAutoVertRate());
+			}
+		
 		}
 
 	private void enableUI(boolean enable)
@@ -1336,6 +1395,16 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	public void setServerImageFont(Font serverImageFont)
 		{
 		this.serverImageFont=serverImageFont;
+		}
+
+	public Pulse getHorzPulse()
+		{
+		return horzPulse;
+		}
+
+	public Pulse getVertPulse()
+		{
+		return vertPulse;
 		}
 	
 	}  //  @jve:decl-index=0:visual-constraint="10,10"

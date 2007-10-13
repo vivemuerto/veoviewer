@@ -25,6 +25,8 @@ import javax.swing.JScrollPane;
 import java.awt.Insets;
 import javax.swing.JComboBox;
 
+import org.buteomont.util.Pulse;
+
 public class OptionsDialog extends JDialog
 	{
 
@@ -58,6 +60,11 @@ public class OptionsDialog extends JDialog
 	private JComboBox autoHorizontalRateComboBox = null;
 	private JLabel vRateLabel = null;
 	private JCheckBox autoVerticalEnableCheckBox = null;
+	private boolean autoHorzMotion=false;
+	private int autoHorzRate=0;
+	private boolean autoVertMotion=false;
+	private int autoVertRate=0;
+	
 	/**
 	 * @param owner
 	 */
@@ -78,6 +85,12 @@ public class OptionsDialog extends JDialog
 		this.setSize(373, 310);
 		this.setTitle("Options");
 		this.setContentPane(getJContentPane());
+		Pulse hpulse=getMainWindow().getHorzPulse();
+		Pulse vpulse=getMainWindow().getVertPulse();
+		getAutoHorizontalEnableCheckBox().setSelected(hpulse!=null);
+		getAutoVerticalEnableCheckBox().setSelected(vpulse!=null);
+		if (hpulse!=null) getAutoHorizontalRateComboBox().setSelectedIndex(hpulse.getRate()-1);
+		if (vpulse!=null) getAutoVerticalRateComboBox().setSelectedIndex(vpulse.getRate()-1);
 		}
 
 	/**
@@ -567,6 +580,7 @@ public class OptionsDialog extends JDialog
 						{
 						getAutoHorizontalRateComboBox().setEnabled(autoHorizontalEnableCheckBox.isSelected());
 						hRateLabel.setEnabled(autoHorizontalEnableCheckBox.isSelected());
+						setAutoHorzMotion(autoHorizontalEnableCheckBox.isSelected());
 						}
 				});
 			}
@@ -590,6 +604,13 @@ public class OptionsDialog extends JDialog
 			{
 			autoVerticalRateComboBox=new JComboBox();
 			autoVerticalRateComboBox.setEnabled(false);
+			autoVerticalRateComboBox.addActionListener(new java.awt.event.ActionListener()
+				{
+					public void actionPerformed(java.awt.event.ActionEvent e)
+						{
+						setAutoVertRate(autoVerticalRateComboBox.getSelectedIndex()+1);
+						}
+				});
 			for (int i=1;i<61;i++)
 				autoVerticalRateComboBox.addItem(""+i);
 			}
@@ -607,6 +628,13 @@ public class OptionsDialog extends JDialog
 			{
 			autoHorizontalRateComboBox=new JComboBox();
 			autoHorizontalRateComboBox.setEnabled(false);
+			autoHorizontalRateComboBox.addActionListener(new java.awt.event.ActionListener()
+				{
+					public void actionPerformed(java.awt.event.ActionEvent e)
+						{
+						setAutoHorzRate(autoHorizontalRateComboBox.getSelectedIndex()+1);
+						}
+				});
 			for (int i=1;i<61;i++)
 				autoHorizontalRateComboBox.addItem(""+i);
 			}
@@ -630,10 +658,51 @@ public class OptionsDialog extends JDialog
 						{
 						getAutoVerticalRateComboBox().setEnabled(autoVerticalEnableCheckBox.isSelected());
 						vRateLabel.setEnabled(autoVerticalEnableCheckBox.isSelected());
+						setAutoVertMotion(autoVerticalEnableCheckBox.isSelected());
 						}
 				});
 			}
 		return autoVerticalEnableCheckBox;
+		}
+
+	public boolean isAutoHorzMotion()
+		{
+		return autoHorzMotion;
+		}
+
+	public void setAutoHorzMotion(boolean autoHorzMotion)
+		{
+		this.autoHorzMotion=autoHorzMotion;
+		}
+
+	public int getAutoHorzRate()
+		{
+		return autoHorzRate;
+		}
+
+	public void setAutoHorzRate(int autoHorzRate)
+		{
+		this.autoHorzRate=autoHorzRate;
+		}
+
+	public boolean isAutoVertMotion()
+		{
+		return autoVertMotion;
+		}
+
+	public void setAutoVertMotion(boolean autoVertMotion)
+		{
+		this.autoVertMotion=autoVertMotion;
+		}
+
+	public int getAutoVertRate()
+		{
+		return autoVertRate;
+		}
+
+	public void setAutoVertRate(int autoVertRate)
+		{
+		this.autoVertRate=autoVertRate;
 		}
 
 	}  //  @jve:decl-index=0:visual-constraint="14,15"
