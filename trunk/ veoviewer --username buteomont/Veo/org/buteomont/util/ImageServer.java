@@ -13,7 +13,8 @@ public class ImageServer extends Thread
 	private int port;
 	private ImageSaver saver;
 	private boolean verbose=true;
-	private boolean started=true; 
+	private boolean started=true;
+	private String imageName="image.jpg";
 	
 public ImageServer(int port, ImageSaver saver, boolean verbose)
 		{
@@ -79,7 +80,11 @@ public ImageServer(int port, ImageSaver saver, boolean verbose)
             	}
             else 
             	{
-//                String req = request.substring(4, request.length()-9).trim();
+                String req = request.substring(5, request.length()-9).trim();
+                if (req.indexOf("?")>0)
+                		req=req.substring(0, req.indexOf("?"));
+                if (req.equals(getImageName()))
+                	{
                     // send image
                     pout.print("HTTP/1.0 200 OK\r\n" +
                                "Content-Type: image/jpeg\r\n" +
@@ -87,15 +92,16 @@ public ImageServer(int port, ImageSaver saver, boolean verbose)
                                "Server: VeoViewer 1.0\r\n\r\n");
                     saver.saveImage(pout);
 //                    log(connection, "200 OK");
-            	}
-            try 
-            	{
-                out.flush();
-                if (connection != null) connection.close(); 
-            	}
-            catch (IOException e) 
-            	{
-            	System.err.println(e); 
+	            	}
+	            try 
+	            	{
+	                out.flush();
+	                if (connection != null) connection.close(); 
+	            	}
+	            catch (IOException e) 
+	            	{
+	            	System.err.println(e); 
+	            	}
             	}
 			}
 		if (isVerbose()) System.out.println("Stopping image server");
@@ -131,7 +137,8 @@ public ImageServer(int port, ImageSaver saver, boolean verbose)
 	
 	private void log(Socket connection, String msg)
 		{
-		System.out.println(new Date() + " [" + connection.getInetAddress().getHostAddress() + 
+		if (isVerbose()) 
+			System.out.println(new Date() + " [" + connection.getInetAddress().getHostAddress() + 
                    ":" + connection.getPort() + "] " + msg);
 		}
 
@@ -189,5 +196,19 @@ public ImageServer(int port, ImageSaver saver, boolean verbose)
 	public void setStarted(boolean started)
 		{
 		this.started=started;
+		}
+
+
+
+	public String getImageName()
+		{
+		return imageName;
+		}
+
+
+
+	public void setImageName(String imageName)
+		{
+		this.imageName=imageName;
 		}
 	}

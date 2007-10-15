@@ -83,6 +83,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	private JCheckBoxMenuItem verboseCheckBoxMenuItem = null;
 	private Pulse horzPulse=null;  //  @jve:decl-index=0:
 	private Pulse vertPulse=null;  //  @jve:decl-index=0:
+	private Map settings=null;	// holds all INI settings
 	
 	
 	public VeoViewer()
@@ -230,7 +231,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 			{
 			e.printStackTrace();
 			}
-		Map settings=init.getData();
+		settings=init.getData();
 		for (Iterator i=settings.keySet().iterator();i.hasNext(); )
 			{
 			String var=(String)i.next();
@@ -258,20 +259,24 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 				setAutologin(Boolean.valueOf((String)settings.get(var)).booleanValue());
 			else if (var.equalsIgnoreCase("maintainAspect"))
 				getMaintainRatioCheckBoxMenuItem().setSelected(Boolean.valueOf((String)settings.get(var)).booleanValue());
-			else if (var.equalsIgnoreCase("serverPortNumber"))
-				setServerPortNumber(Integer.valueOf((String)settings.get(var)).intValue());
+
+			// auto-motion info
 			else if (var.equalsIgnoreCase("horzRate"))
 				makeHorzPulse(Integer.valueOf((String)settings.get(var)).intValue());
 			else if (var.equalsIgnoreCase("vertRate"))
 				makeVertPulse(Integer.valueOf((String)settings.get(var)).intValue());
 			
-			//server timestamp font info
+			//server info
+			else if (var.equalsIgnoreCase("serverPortNumber"))
+				setServerPortNumber(Integer.valueOf((String)settings.get(var)).intValue());
 			else if (var.equalsIgnoreCase("serverFontFace"))
 				serverFontFace=(String)settings.get(var);
 			else if (var.equalsIgnoreCase("serverFontSize"))
 				serverFontSize=(String)settings.get(var);
 			else if (var.equalsIgnoreCase("serverFontStyle"))
 				serverFontStyle=(String)settings.get(var);
+			else if (var.equalsIgnoreCase("serverImageName") && getImageServer()!=null)
+				getImageServer().setImageName((String)settings.get(var));
 
 			else if (var.equalsIgnoreCase("resolution"))
 				{
@@ -313,7 +318,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		{
 		if (isVerbose()) System.out.println("Writing settings to "+INI_FILE_NAME);
 		Initializer init=new Initializer(INI_FILE_NAME);
-		Map settings=new Hashtable();
+		settings=new Hashtable<String, String>();
 		init.setData(settings);
 		settings.put("verbose", Boolean.toString(isVerbose()));
 		settings.put("serverEnabled", Boolean.toString(isServerEnabled()));
@@ -341,6 +346,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		settings.put("resolution", res);
 		if (horzPulse!=null) settings.put("horzRate", horzPulse.getRate()+"");
 		if (vertPulse!=null) settings.put("vertRate", vertPulse.getRate()+"");
+		if (getImageServer()!=null) settings.put("serverImageName", getImageServer().getImageName());
 		try
 			{
 			init.persist();
@@ -961,6 +967,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 			if (isServerTimestampEnabled())
 				setServerImageFont(dialog.getTimestampFont());
 			setServerTimestampEnabled(dialog.getTimestampOptionCheckBox().isSelected());
+			getImageServer().setImageName(dialog.getImageNameTextField().getText());
 			setAutoMotion(dialog);
 			}
 		}
@@ -969,7 +976,9 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		{
 		if (isVerbose()) System.out.println("Starting image server");
 		imageServer=new ImageServer(getServerPortNumber(),this,isVerbose());
-		imageServer.start();
+		String name=(String)settings.get("serverImageName");
+		if (name!=null) getImageServer().setImageName(name);
+		getImageServer().start();
 		}
 
 	/**
@@ -1430,5 +1439,17 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 					 id.equals("V")?veo.isUp():veo.isRight(),
 					 true);
 		}
-	
+
+	public String getImageName()
+		{
+		String name=null;
+		if (getImageServer()!=null)
+			name=getImageServer().getImageName();
+		return name;
+		}
+
+	public ImageServer getImageServer()
+		{
+		return imageServer;
+		}
 	}  //  @jve:decl-index=0:visual-constraint="10,10"
