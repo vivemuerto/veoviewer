@@ -64,6 +64,9 @@ public class OptionsDialog extends JDialog
 	private int autoHorzRate=0;
 	private boolean autoVertMotion=false;
 	private int autoVertRate=0;
+	private JPanel imageNamePanel = null;
+	private JLabel imageNameLabel = null;
+	private JTextField imageNameTextField = null;
 	
 	/**
 	 * @param owner
@@ -126,14 +129,22 @@ public class OptionsDialog extends JDialog
 			enableServerCheckBox.setText("Enable Image Server");
 			enableServerCheckBox.addActionListener(new java.awt.event.ActionListener()
 				{
-					public void actionPerformed(java.awt.event.ActionEvent e)
-						{
-						serverPortOptionLabel.setEnabled(enableServerCheckBox.isSelected());
-						getServerPortTextField().setEnabled(enableServerCheckBox.isSelected());
-						}
+				public void actionPerformed(java.awt.event.ActionEvent e)
+					{
+					enableServerOptions();
+					}
 				});
 			}
 		return enableServerCheckBox;
+		}
+
+	private void enableServerOptions()
+		{
+		boolean enabled=getEnableServerCheckBox().isSelected();
+		serverPortOptionLabel.setEnabled(enabled);
+		getServerPortTextField().setEnabled(enabled);
+		getImageNameTextField().setEnabled(enabled);
+		imageNameLabel.setEnabled(enabled);
 		}
 
 	/**
@@ -145,10 +156,17 @@ public class OptionsDialog extends JDialog
 		{
 		if (imageServerOptionsPanel==null)
 			{
+			GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+			gridBagConstraints16.gridx = 3;
+			gridBagConstraints16.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints16.weightx = 1.0D;
+			gridBagConstraints16.gridy = 1;
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
 			gridBagConstraints11.gridx = 0;
 			gridBagConstraints11.gridwidth = 2;
 			gridBagConstraints11.anchor = GridBagConstraints.WEST;
+			gridBagConstraints11.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints11.weightx = 1.0D;
 			gridBagConstraints11.gridy = 1;
 			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
 			gridBagConstraints21.gridx = 0;
@@ -172,6 +190,8 @@ public class OptionsDialog extends JDialog
 			GridBagConstraints gridBagConstraints = new GridBagConstraints();
 			gridBagConstraints.gridx = 0;
 			gridBagConstraints.anchor = GridBagConstraints.WEST;
+			gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints.weightx = 1.0D;
 			gridBagConstraints.gridy = 0;
 			imageServerOptionsPanel=new JPanel();
 			imageServerOptionsPanel.setLayout(new GridBagLayout());
@@ -180,6 +200,7 @@ public class OptionsDialog extends JDialog
 			imageServerOptionsPanel.add(getPortOptionPanel(), gridBagConstraints5);
 			imageServerOptionsPanel.add(getTimestampOptionsPanel(), gridBagConstraints21);
 			imageServerOptionsPanel.add(getAllowMotionCheckBox(), gridBagConstraints11);
+			imageServerOptionsPanel.add(getImageNamePanel(), gridBagConstraints16);
 			}
 		return imageServerOptionsPanel;
 		}
@@ -338,6 +359,7 @@ public class OptionsDialog extends JDialog
 	public void show()
 		{
 		getEnableServerCheckBox().setSelected(isServerEnabled());
+		enableServerOptions();
 		getServerPortTextField().setText(getServerPortNumber()+"");
 		serverPortOptionLabel.setEnabled(isServerEnabled());
 		getServerPortTextField().setEnabled(isServerEnabled());
@@ -703,6 +725,43 @@ public class OptionsDialog extends JDialog
 	public void setAutoVertRate(int autoVertRate)
 		{
 		this.autoVertRate=autoVertRate;
+		}
+
+	/**
+	 * This method initializes imageNamePanel	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getImageNamePanel()
+		{
+		if (imageNamePanel==null)
+			{
+			imageNameLabel = new JLabel();
+			imageNameLabel.setText("Image Name:");
+			imageNameLabel.setEnabled(false);
+			imageNamePanel=new JPanel();
+			imageNamePanel.setLayout(new FlowLayout());
+			imageNamePanel.add(imageNameLabel, null);
+			imageNamePanel.add(getImageNameTextField(), null);
+			}
+		return imageNamePanel;
+		}
+
+	/**
+	 * This method initializes imageNameTextField	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	public JTextField getImageNameTextField()
+		{
+		if (imageNameTextField==null)
+			{
+			imageNameTextField=new JTextField();
+			imageNameTextField.setPreferredSize(new Dimension(100, 20));
+			imageNameTextField.setText(getMainWindow().getImageName());
+			imageNameTextField.setEnabled(false);
+			}
+		return imageNameTextField;
 		}
 
 	}  //  @jve:decl-index=0:visual-constraint="14,15"
