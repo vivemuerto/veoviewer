@@ -616,20 +616,33 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 			{
 			int w = image.getWidth(null);
 	        int h = image.getHeight(null);
-	        BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-	        Graphics2D g2 = bi.createGraphics();
-	        g2.drawImage(image, 0, 0, null);
-	        if (isServerTimestampEnabled())
-	        	drawTimestamp(g2, w, h);
-	        g2.dispose();
-		    try
-		        {
+	        BufferedImage bi=null;
+			try
+				{
+				bi=new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+				Graphics2D g2 = bi.createGraphics();
+				g2.drawImage(image, 0, 0, null);
+				if (isServerTimestampEnabled())
+					drawTimestamp(g2, w, h);
+				g2.dispose();
 		        ImageIO.write(bi, "jpg", stream);
-		        }
-		        catch(IOException ioe)
+				}
+	        catch(IOException ioe)
 		        {
-		            System.out.println("write: " + ioe.getMessage());
+		        System.out.println("write: " + ioe.getMessage());
 		        }
+			catch (RuntimeException e)
+				{
+				e.printStackTrace();
+				// don't know why this happens occasionally - restart 
+				// the image server
+				if (isServerEnabled())
+					{
+					setServerEnabled(false);
+					setServerEnabled(true);
+					startServer();
+					}
+				}
 			}
 		else
 			System.out.println("Image not written - it is null.");
@@ -1362,6 +1375,10 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	public void setServerEnabled(boolean serverEnabled)
 		{
 		this.serverEnabled=serverEnabled;
+		if (!serverEnabled && getImageServer()!=null)
+			{
+			getImageServer().setStarted(false);
+			}
 		}
 
 	public boolean isVerbose()
