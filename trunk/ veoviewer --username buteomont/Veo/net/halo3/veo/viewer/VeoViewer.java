@@ -36,7 +36,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	private JPanel	mainPanel;
 	String			username	="admin";  //  @jve:decl-index=0:
 	String			password	="password";  //  @jve:decl-index=0:
-	String			hostname	="10.10.6.91";  //  @jve:decl-index=0:
+	String			hostname	="10.10.6.90";  //  @jve:decl-index=0:
 	String			port		="1600";  //  @jve:decl-index=0:
 	PulsedVeo		veo			=null;  //  @jve:decl-index=0:
 	private boolean	streaming	=false;
@@ -1236,20 +1236,16 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 								}
 							}
 						}
-					catch (NumberFormatException e)
+					catch (Exception e)
 						{
-						JOptionPane.showMessageDialog(this, "Invalid port number "+port);
+						JOptionPane.showMessageDialog(this, 
+							"Unable to connect to "+hostname
+							+" at port "+port
+							+" due to "
+							+e.getClass().toString().substring(5)+".\nExiting.");
 						e.printStackTrace();
-						}
-					catch (UnknownHostException e)
-						{
-						JOptionPane.showMessageDialog(this, "Unknown Host: "+hostname);
-						e.printStackTrace();
-						}
-					catch (IOException e)
-						{
-						JOptionPane.showMessageDialog(this, "Exception: "+e);
-						e.printStackTrace();
+//						updateOptions();
+						System.exit(-1); // fix this to allow option editing instead
 						}
 					}
 				}
