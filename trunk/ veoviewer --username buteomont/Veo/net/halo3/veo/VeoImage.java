@@ -100,7 +100,16 @@ public class VeoImage {
      * @return The Image object.
      */
     public Image getImage() {
-        return Toolkit.getDefaultToolkit().createImage(image.toByteArray());
+        Image img=null;
+		try
+			{
+			img=Toolkit.getDefaultToolkit().createImage(image.toByteArray());
+			}
+		catch (Exception e)
+			{
+			e.printStackTrace();
+			}
+        return img;
     }
 
     /**

@@ -113,9 +113,9 @@ public class Veo implements VeoConstants {
     /** Print status and debug info to stdout. */
     private boolean verbose=true;
     
-    private Map veoMoveText=new Hashtable();
-    private Map veoResponseText=new Hashtable();
-    private Map veoMessageText=new Hashtable();
+    private Map<Integer, String> veoMoveText=new Hashtable<Integer, String>();
+    private Map<Integer, String> veoResponseText=new Hashtable<Integer, String>();
+    private Map<Integer, String> veoMessageText=new Hashtable<Integer, String>();
 
     /**
      * Construct a Veo object and connect to the specified host and port. The

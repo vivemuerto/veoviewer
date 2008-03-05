@@ -1076,8 +1076,12 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	 */
 	public void processImage(VeoImage image)
 		{
-		saveCameraImage(image.getImage());
-		getImagePanel().repaint();
+		Image img=image.getImage();
+		if (img!=null)
+			{
+			saveCameraImage(img);
+			getImagePanel().repaint();
+			}
 		}
 
 	/** Auto-generated event handler method */
