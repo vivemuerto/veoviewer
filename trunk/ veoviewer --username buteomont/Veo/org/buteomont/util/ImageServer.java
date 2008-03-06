@@ -62,9 +62,10 @@ public ImageServer(int port, ImageSaver saver, boolean verbose)
 				        break;
 				}
 				}
-			catch (IOException e1)
+			catch (Exception e1)
 				{
 				e1.printStackTrace();
+				continue;
 				}
 
             // check that the request is well-formed and 
@@ -98,9 +99,10 @@ public ImageServer(int port, ImageSaver saver, boolean verbose)
 	                out.flush();
 	                if (connection != null) connection.close(); 
 	            	}
-	            catch (IOException e) 
+	            catch (Exception e) 
 	            	{
 	            	System.err.println(e); 
+					continue;
 	            	}
             	}
 			}
