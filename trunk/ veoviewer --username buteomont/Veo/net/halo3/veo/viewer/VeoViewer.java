@@ -988,7 +988,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	private void startServer()
 		{
 		if (isVerbose()) System.out.println("Starting image server");
-		imageServer=new ImageServer(getServerPortNumber(),this,isVerbose());
+		imageServer=new ImageServer(getServerPortNumber(),this,veo,isVerbose());
 		String name=(String)settings.get("serverImageName");
 		if (name!=null) getImageServer().setImageName(name);
 		getImageServer().start();
