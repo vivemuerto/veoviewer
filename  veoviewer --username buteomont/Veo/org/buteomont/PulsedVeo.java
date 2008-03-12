@@ -5,9 +5,10 @@ import java.net.UnknownHostException;
 
 import net.halo3.veo.Veo;
 
+import org.buteomont.util.CommandListener;
 import org.buteomont.util.PulseListener;
 
-public class PulsedVeo extends Veo implements PulseListener
+public class PulsedVeo extends Veo implements PulseListener, CommandListener
 	{
 	private int hStep=0;
 	private int vStep=0;
@@ -102,6 +103,20 @@ public class PulsedVeo extends Veo implements PulseListener
 	public boolean isUp()
 		{
 		return up;
+		}
+
+	public void command(byte cmd, int quan)
+		{
+		try
+			{
+			moveCamera(cmd);
+			}
+		catch (IOException e)
+			{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			}
+		
 		}
 
 	}
