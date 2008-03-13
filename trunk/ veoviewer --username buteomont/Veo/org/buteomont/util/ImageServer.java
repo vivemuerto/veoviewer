@@ -136,43 +136,7 @@ public ImageServer(int port, ImageSaver saver, CommandListener commandListener, 
 		
 	private void doCommand(String parms)
 		{
-		String[] nvp=parms.toLowerCase().split("=");
-		if (nvp.length>1)
-			{
-			char cmd=nvp[0].charAt(0);
-			int quan;
-			try
-				{
-				String[] val=nvp[1].split("\\.");
-				if (val.length>0)
-					quan=Integer.parseInt(val[0]);
-				else
-					quan=Integer.parseInt(nvp[1]);
-				switch (cmd)
-					{
-					case 'u':
-						commandListener.command(Veo.VEO_MOVE_UP, quan);
-						break;
-					case 'd':
-						commandListener.command(Veo.VEO_MOVE_DOWN, quan);
-						break;
-					case 'l':
-						commandListener.command(Veo.VEO_MOVE_LEFT, quan);
-						break;
-					case 'r':
-						commandListener.command(Veo.VEO_MOVE_RIGHT, quan);
-						break;
-	
-					default:
-						break;
-					}
-				}
-			catch (Exception e)
-				{
-				e.printStackTrace();
-				
-				}
-			}
+		commandListener.command(parms);
 		}
 
 
