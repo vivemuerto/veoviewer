@@ -59,6 +59,10 @@ import net.halo3.veo.messages.*;
 
 public class Veo implements VeoConstants {
 
+	/** maximum steps from one extreme to the other */
+	public final static int MAX_VERTICAL 	= 40;
+	public final static int MAX_HORIZONTAL 	= 40;
+	
     /** The default timeout to wait for a response */
     private static final int DEF_TIMEOUT = 10000;
 
@@ -72,7 +76,7 @@ public class Veo implements VeoConstants {
     private byte accessLevel;
 
     /** The streamId obtained at login, or via selectStream */
-    private int streamId;
+    protected int streamId;
 
     /** Format, obtained at login or selectStream. TODO: figure out values. */
     private byte format;
@@ -549,10 +553,5 @@ public class Veo implements VeoConstants {
 	public void setVerbose(boolean verbose)
 		{
 		this.verbose=verbose;
-		}
-
-	public int getStreamId()
-		{
-		return streamId;
 		}
 }
