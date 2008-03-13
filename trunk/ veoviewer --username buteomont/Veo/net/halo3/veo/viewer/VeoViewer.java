@@ -49,8 +49,6 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 	private JPanel horzAdjPanel = null;
 	private JPanel vertAdjPanel = null;
 	
-	public final static int MAX_VERTICAL 	= 40;
-	public final static int MAX_HORIZONTAL 	= 40;
 	private JPanel imagePanel = null;
 	
 	private Image imgFromCamera=null;  //  @jve:decl-index=0:
@@ -393,10 +391,10 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		if (horizSlider==null)
 			{
 			horizSlider=new JSlider();
-			horizSlider.setMaximum(MAX_HORIZONTAL);
+			horizSlider.setMaximum(Veo.MAX_HORIZONTAL);
 			horizSlider.setEnabled(false);
 			horizSlider.setToolTipText("20");
-			horizSlider.setValue(MAX_HORIZONTAL/2);
+			horizSlider.setValue(Veo.MAX_HORIZONTAL/2);
 			horizSlider.addChangeListener(new ChangeListener()
 				{
 				public void stateChanged(ChangeEvent e)
@@ -441,7 +439,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		if (verticalAxis) 
 			{
 			vertPosition+=dir;
-			if (vertPosition>MAX_VERTICAL) vertPosition=MAX_VERTICAL;
+			if (vertPosition>Veo.MAX_VERTICAL) vertPosition=Veo.MAX_VERTICAL;
 			if (vertPosition<0) vertPosition=0;
 			if (alsoUpdateSlider)
 				getVertSlider().setValue(vertPosition);
@@ -449,7 +447,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		else 
 			{
 			horzPosition+=dir;
-			if (horzPosition>MAX_HORIZONTAL) horzPosition=MAX_HORIZONTAL;
+			if (horzPosition>Veo.MAX_HORIZONTAL) horzPosition=Veo.MAX_HORIZONTAL;
 			if (horzPosition<0) horzPosition=0;
 			if (alsoUpdateSlider)
 				getHorizSlider().setValue(horzPosition);
@@ -483,10 +481,10 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 			{
 			vertSlider=new JSlider();
 			vertSlider.setOrientation(JSlider.VERTICAL);
-			vertSlider.setValue(MAX_VERTICAL/2);
+			vertSlider.setValue(Veo.MAX_VERTICAL/2);
 			vertSlider.setEnabled(false);
 			vertSlider.setToolTipText("20");
-			vertSlider.setMaximum(MAX_VERTICAL);
+			vertSlider.setMaximum(Veo.MAX_VERTICAL);
 			vertSlider.addChangeListener(new ChangeListener()
 				{
 				public void stateChanged(ChangeEvent e)
@@ -1089,7 +1087,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		{
 		try
 			{
-			if (vertPosition<MAX_VERTICAL)
+			if (vertPosition<Veo.MAX_VERTICAL)
 				veo.moveCamera(Veo.VEO_MOVE_UP);
 			else
 				veo.moveCamera(Veo.VEO_MOVE_FULL_UP);
@@ -1140,7 +1138,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		{
 		try
 			{
-			if (horzPosition<MAX_HORIZONTAL)
+			if (horzPosition<Veo.MAX_HORIZONTAL)
 				veo.moveCamera(Veo.VEO_MOVE_RIGHT);
 			else
 				veo.moveCamera(Veo.VEO_MOVE_FULL_RIGHT);
@@ -1210,7 +1208,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 					try
 						{
 //						veo=new Veo(hostname, Integer.parseInt(port));
-						veo=new PulsedVeo(hostname, Integer.parseInt(port), MAX_HORIZONTAL);
+						veo=new PulsedVeo(hostname, Integer.parseInt(port), Veo.MAX_HORIZONTAL);
 						loggedIn=veo.login(username, password);
 						if (loggedIn==false)
 							{

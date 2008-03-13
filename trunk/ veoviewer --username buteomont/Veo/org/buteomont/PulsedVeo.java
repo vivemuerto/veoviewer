@@ -122,21 +122,24 @@ public class PulsedVeo extends Veo implements PulseListener, CommandListener
 						quan=Integer.parseInt(val[0]);
 					else
 						quan=Integer.parseInt(orders[1]);
-					short numerator=1;
+					float numerator=1;
+					float denominator=1;
 					switch (cmd)
 						{
 						case 'u':
 						case 'd':
-							numerator=getStreams()[getStreamId()].getHeight();
+							numerator=getStreams()[streamId].getHeight();
+							denominator=MAX_VERTICAL;
 							break;
 						case 'l':
 						case 'r':
-							numerator=getStreams()[getStreamId()].getWidth();
+							numerator=getStreams()[streamId].getWidth();
+							denominator=MAX_HORIZONTAL;
 							break;
 						default:
 							continue;
 						}
-					quan=quan/(numerator/40);
+					quan=(int)(quan/(numerator/denominator))/2;
 					while (quan-->0)
 						{
 						switch (cmd)
