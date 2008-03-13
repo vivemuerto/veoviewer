@@ -550,4 +550,9 @@ public class Veo implements VeoConstants {
 		{
 		this.verbose=verbose;
 		}
+
+	public int getStreamId()
+		{
+		return streamId;
+		}
 }

@@ -105,18 +105,68 @@ public class PulsedVeo extends Veo implements PulseListener, CommandListener
 		return up;
 		}
 
-	public void command(byte cmd, int quan)
+	public void command(String commandString)
 		{
-		try
+		String[] nvp=commandString.toLowerCase().split("&");
+		for (String name:nvp)
 			{
-			moveCamera(cmd);
+			String[] orders=name.split("=");
+			if (orders.length>1)
+				{
+				char cmd=orders[0].charAt(0);
+				int quan=0;
+				try
+					{
+					String[] val=orders[1].split("\\.");
+					if (val.length>0)
+						quan=Integer.parseInt(val[0]);
+					else
+						quan=Integer.parseInt(orders[1]);
+					short numerator=1;
+					switch (cmd)
+						{
+						case 'u':
+						case 'd':
+							numerator=getStreams()[getStreamId()].getHeight();
+							break;
+						case 'l':
+						case 'r':
+							numerator=getStreams()[getStreamId()].getWidth();
+							break;
+						default:
+							continue;
+						}
+					quan=quan/(numerator/40);
+					while (quan-->0)
+						{
+						switch (cmd)
+							{
+							case 'u':
+								moveCamera(VEO_MOVE_UP);
+								break;
+							case 'd':
+								moveCamera(VEO_MOVE_DOWN);
+								break;
+							case 'l':
+								moveCamera(VEO_MOVE_LEFT);
+								break;
+							case 'r':
+								moveCamera(VEO_MOVE_RIGHT);
+								break;
+			
+							default:
+								break;
+							}
+						Thread.sleep(100);
+						}
+					}
+				catch (Exception e)
+					{
+					e.printStackTrace();
+					
+					}
+				}
 			}
-		catch (IOException e)
-			{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			}
-		
 		}
 
 	}
