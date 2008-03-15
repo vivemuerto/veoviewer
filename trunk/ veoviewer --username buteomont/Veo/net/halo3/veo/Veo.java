@@ -60,8 +60,8 @@ import net.halo3.veo.messages.*;
 public class Veo implements VeoConstants {
 
 	/** maximum steps from one extreme to the other */
-	public final static int MAX_VERTICAL 	= 50;
-	public final static int MAX_HORIZONTAL 	= 40;
+	public final static int MAX_VERTICAL 	= 46;
+	public final static int MAX_HORIZONTAL 	= 60;
 	
     /** The default timeout to wait for a response */
     private static final int DEF_TIMEOUT = 10000;

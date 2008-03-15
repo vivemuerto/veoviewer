@@ -15,6 +15,8 @@ public class PulsedVeo extends Veo implements PulseListener, CommandListener
 	private int max=0;
 	private boolean up;
 	private boolean right;
+	public static final int MODE_STEPS=0;
+	public static final int MODE_PIXELS=1;
 	
 	public PulsedVeo(String host, int port, int maxSteps) throws UnknownHostException, IOException
 		{
@@ -107,6 +109,7 @@ public class PulsedVeo extends Veo implements PulseListener, CommandListener
 
 	public void command(String commandString)
 		{
+		int mode=MODE_STEPS;
 		String[] nvp=commandString.toLowerCase().split("&");
 		for (String name:nvp)
 			{
@@ -117,15 +120,24 @@ public class PulsedVeo extends Veo implements PulseListener, CommandListener
 				int quan=0;
 				try
 					{
-					String[] val=orders[1].split("\\.");
-					if (val.length>0)
-						quan=Integer.parseInt(val[0]);
-					else
-						quan=Integer.parseInt(orders[1]);
+					if (isANumber(orders[1]))
+						{
+						String[] val=orders[1].split("\\.");
+						if (val.length>0)
+							quan=Integer.parseInt(val[0]);
+						else
+							quan=Integer.parseInt(orders[1]);
+						}
 					float numerator=1;
 					float denominator=1;
 					switch (cmd)
 						{
+						case 't':
+							if (orders[1].charAt(0)=='p')
+								mode=MODE_PIXELS;
+							if (orders[1].charAt(0)=='s')
+								mode=MODE_STEPS;
+							continue;
 						case 'u':
 						case 'd':
 							numerator=getStreams()[streamIndex].getHeight()*1.4f;
@@ -133,13 +145,14 @@ public class PulsedVeo extends Veo implements PulseListener, CommandListener
 							break;
 						case 'l':
 						case 'r':
-							numerator=getStreams()[streamIndex].getWidth()*2.2f;
+							numerator=getStreams()[streamIndex].getWidth()*2.7f;
 							denominator=MAX_HORIZONTAL;
 							break;
 						default:
 							continue;
 						}
-					quan=(int)(quan/(numerator/denominator));
+					if (mode==MODE_PIXELS)
+						quan=(int)(quan/(numerator/denominator));
 					while (quan-->0)
 						{
 						switch (cmd)
@@ -170,6 +183,25 @@ public class PulsedVeo extends Veo implements PulseListener, CommandListener
 					}
 				}
 			}
+		}
+	/**
+	 * Tests a String to see if it can be converted to a floating point number.
+	 * @param possibleNumber String representation of a number, or not.
+	 * @return boolean
+	 */
+	public final static boolean isANumber(String possibleDecimalNumber)
+		{
+		boolean isNumeric=false;
+		try 
+			{
+			Float.valueOf(possibleDecimalNumber);  //Test for numeric
+			isNumeric=true;
+			}
+		catch(NumberFormatException e)
+			{
+			// Must not be a number
+			}
+		return isNumeric;
 		}
 
 	}
