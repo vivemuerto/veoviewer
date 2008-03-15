@@ -60,7 +60,7 @@ import net.halo3.veo.messages.*;
 public class Veo implements VeoConstants {
 
 	/** maximum steps from one extreme to the other */
-	public final static int MAX_VERTICAL 	= 40;
+	public final static int MAX_VERTICAL 	= 50;
 	public final static int MAX_HORIZONTAL 	= 40;
 	
     /** The default timeout to wait for a response */
@@ -77,6 +77,9 @@ public class Veo implements VeoConstants {
 
     /** The streamId obtained at login, or via selectStream */
     protected int streamId;
+
+    /** The selected index into the streams[] array */
+    protected int streamIndex;
 
     /** Format, obtained at login or selectStream. TODO: figure out values. */
     private byte format;
@@ -275,6 +278,7 @@ public class Veo implements VeoConstants {
     public boolean selectStream(int index, int framesPerSec) throws IOException {
     	if (isVerbose()) System.out.println("Selecting stream "+index+" at "+framesPerSec+" frames per second");
         Stream s = streams[index];
+        streamIndex=index;
         return selectStream(s, framesPerSec);
     }
 
