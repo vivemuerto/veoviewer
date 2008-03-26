@@ -1244,10 +1244,10 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 							"Unable to connect to "+hostname
 							+" at port "+port
 							+" due to "
-							+e.getClass().toString().substring(5)+".\nExiting.");
+							+e.getClass().toString().substring(5)+".");
 						e.printStackTrace();
-//						updateOptions();
-						System.exit(-1); // fix this to allow option editing instead
+						setManualLogin(true);
+						continue;
 						}
 					}
 				}
