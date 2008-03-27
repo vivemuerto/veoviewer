@@ -203,5 +203,4 @@ public class PulsedVeo extends Veo implements PulseListener, CommandListener
 			}
 		return isNumeric;
 		}
-
 	}

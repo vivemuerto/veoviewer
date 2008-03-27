@@ -210,7 +210,7 @@ public class Veo implements VeoConstants {
      *             If unable to send login request.
      */
     public boolean login(String userid, String password) throws IOException {
-    	if (isVerbose()) System.out.println("Logging in");
+    	if (isVerbose()) System.out.print("Logging in...");
         LoginRequest m = new LoginRequest(userid, password);
         Response r = sendRequest(m, DEF_TIMEOUT);
 
@@ -237,8 +237,10 @@ public class Veo implements VeoConstants {
                 Stream s = new Stream(i, h, w, maxTime, minTime);
                 streams[i] = s;
             }
+            if (isVerbose()) System.out.println("ok.");
             return true;
         }
+        if (isVerbose()) System.out.println("failed.");
         return false;
     }
 
@@ -276,10 +278,17 @@ public class Veo implements VeoConstants {
      *             If unable to select the stream due to IO error.
      */
     public boolean selectStream(int index, int framesPerSec) throws IOException {
-    	if (isVerbose()) System.out.println("Selecting stream "+index+" at "+framesPerSec+" frames per second");
+    	if (isVerbose()) System.out.print("Selecting stream "+index+" at "+framesPerSec+" frames per second...");
         Stream s = streams[index];
         streamIndex=index;
-        return selectStream(s, framesPerSec);
+        boolean ok=selectStream(s, framesPerSec);
+        if (ok)
+            {
+            if (isVerbose()) System.out.println("ok.");
+            }
+        else
+            if (isVerbose()) System.out.println("failed.");
+        return ok;
     }
 
     /**
@@ -429,11 +438,15 @@ public class Veo implements VeoConstants {
      *             IO error.
      */
     public boolean startStream() throws IOException {
-		if (isVerbose()) System.out.println("Starting stream");
+		if (isVerbose()) System.out.print("Starting stream...");
         Request m = new StartStreamRequest(false, streamId);
         Response r = sendRequest(m, DEF_TIMEOUT);
         if (r != null && r.getType() == VEO_RESPONSE_OK)
+            {
+            if (isVerbose()) System.out.println("ok.");
             return true;
+            }
+        if (isVerbose()) System.out.println("failed.");
         return false;
     }
 
@@ -469,11 +482,15 @@ public class Veo implements VeoConstants {
      *             IO error.
      */
     public boolean stopStream() throws IOException {
-		if (isVerbose()) System.out.println("Stopping stream");
+		if (isVerbose()) System.out.print("Stopping stream...");
         Request m = new StopStreamRequest();
         Response r = sendRequest(m, 5000);
         if (r != null && r.getType() == VEO_RESPONSE_OK)
+            {
+            if (isVerbose()) System.out.println("ok.");
             return true;
+            }
+        if (isVerbose()) System.out.println("failed.");
         return false;
     }
 

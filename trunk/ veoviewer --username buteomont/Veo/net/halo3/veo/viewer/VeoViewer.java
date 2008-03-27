@@ -213,6 +213,20 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		initFromIni();
 		connectDisconnect();
 		if (isServerEnabled()) startServer();
+		
+		//this part fixes a race condition on startup.
+		//Maybe figure out the real problem one day.
+		try
+			{
+			Thread.sleep(1000);
+			startStopStreaming();
+			Thread.sleep(1000);
+			startStopStreaming();
+			}
+		catch (InterruptedException e)
+			{
+			e.printStackTrace();
+			}
 		}
 
 	private void initFromIni()
@@ -1151,7 +1165,7 @@ public class VeoViewer extends javax.swing.JFrame implements VeoImageHandler, Im
 		}
 
 	/** Auto-generated event handler method */
-	protected void connectDisconnect()
+	protected synchronized void connectDisconnect()
 		{
 		boolean loggedIn=false;
 		if (veo!=null)
